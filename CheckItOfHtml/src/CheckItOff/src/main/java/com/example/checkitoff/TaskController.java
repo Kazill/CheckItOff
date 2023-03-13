@@ -39,20 +39,8 @@ public class TaskController {
 
     @FXML
     void onAddButtonClick(ActionEvent event) {
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-            TaskName.setText("Do laundry");
-            Stage stage = new Stage();
-            try {
-                Scene scene = new Scene(fxmlLoader.load(), 1280, 800);
-                stage.setTitle("Hello!");
-                stage.setScene(scene);
-                stage.show();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            }
+            
+    }
 
 
     @FXML
