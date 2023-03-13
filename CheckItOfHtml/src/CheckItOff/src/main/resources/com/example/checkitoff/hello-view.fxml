@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -9,9 +12,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.19483568075117372" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.19483568075117372" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.checkitoff.TaskController">
   <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="146.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="146.0" style="-fx-background-color: lightgrey;">
          <children>
             <Label layoutX="7.0" layoutY="59.0" prefHeight="50.0" prefWidth="93.0" text="Menu">
                <font>
@@ -19,16 +22,21 @@
                </font>
             </Label>
             <Line endX="138.0" layoutX="108.0" layoutY="109.0" startX="-108.0" />
-            <Label layoutX="14.0" layoutY="110.0" prefHeight="41.0" prefWidth="93.0" text="TASKS">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
             <ImageView fitHeight="59.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@Logo.png" />
                </image>
             </ImageView>
+            <MenuButton fx:id="Menu" layoutX="7.0" layoutY="116.0" mnemonicParsing="false" onAction="#onHelloButtonClick" text="TASKS">
+              <items>
+                  <MenuItem fx:id="Upcoming" mnemonicParsing="false" text="Upcoming" />
+                <MenuItem fx:id="Today" mnemonicParsing="false" text="Today" />
+                <MenuItem fx:id="Calendar" mnemonicParsing="false" text="Calendar" />
+              </items>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </MenuButton>
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
@@ -37,7 +45,24 @@
                   <Font size="48.0" />
                </font>
             </Label>
-            <Button layoutX="14.0" layoutY="95.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="230.0" text="+ Add New Task" />
+            <Button fx:id="AddNewTask" layoutX="14.0" layoutY="95.0" mnemonicParsing="false" onAction="#onAddButtonClick" prefHeight="25.0" prefWidth="230.0" text="+ Add New Task" />
+            <Accordion layoutX="629.0" layoutY="290.0" />
+            <AnchorPane fx:id="AddBar" layoutX="787.0" layoutY="8.0" prefHeight="798.0" prefWidth="327.0" style="-fx-background-color: lightgrey;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="20.0" prefHeight="50.0" prefWidth="188.0" text="Task:">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="TaskName" layoutX="14.0" layoutY="70.0" prefHeight="59.0" prefWidth="301.0" text="Name" />
+                  <Label fx:id="Description" layoutX="14.0" layoutY="143.0" prefHeight="147.0" prefWidth="301.0" text="Description" />
+                  <Button fx:id="SaveButton" layoutX="200.0" layoutY="730.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="113.0" text="Save">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Button>
+               </children>
+            </AnchorPane>
          </children></AnchorPane>
   </items>
 </SplitPane>
