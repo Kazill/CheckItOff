@@ -1,0 +1,63 @@
+package com.example.checkitoff;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.AnchorPane;
+
+public class TaskController {
+
+    @FXML
+    private AnchorPane AddBar;
+
+    @FXML
+    private Button AddNewTask;
+
+    @FXML
+    private MenuItem Calendar;
+
+    @FXML
+    private Label Description;
+
+    @FXML
+    private MenuButton Menu;
+
+    @FXML
+    private Button SaveButton;
+
+    @FXML
+    private Label TaskName;
+
+    @FXML
+    private MenuItem Today;
+
+    @FXML
+    private MenuItem Upcoming;
+
+    @FXML
+    void onAddButtonClick(ActionEvent event) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+            TaskName.setText("Do laundry");
+            Stage stage = new Stage();
+            try {
+                Scene scene = new Scene(fxmlLoader.load(), 1280, 800);
+                stage.setTitle("Hello!");
+                stage.setScene(scene);
+                stage.show();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            }
+
+
+    @FXML
+    void onHelloButtonClick(ActionEvent event) {
+
+    }
+
+}
