@@ -21,9 +21,9 @@ public class TaskController {
 
     @FXML
     private Label Description;
-
+    
     @FXML
-    private MenuButton Menu;
+    private ListView<?> MenuList;
 
     @FXML
     private Button SaveButton;
@@ -41,11 +41,4 @@ public class TaskController {
     void onAddButtonClick(ActionEvent event) {
             
     }
-
-
-    @FXML
-    void onHelloButtonClick(ActionEvent event) {
-
-    }
-
 }
