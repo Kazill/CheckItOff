@@ -16,6 +16,10 @@ public class TaskController implements Initializable {
     private AnchorPane AddBar;
     @FXML
     private Button AddNewTask;
+     @FXML
+    private Button CategoryButton;
+    @FXML
+    private ListView<?> CategoryList;
     @FXML
     private MenuItem Calendar;
     @FXML
