@@ -1,5 +1,7 @@
 package com.example.checkitoff;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,7 +18,7 @@ public class TaskController implements Initializable {
     private AnchorPane AddBar;
     @FXML
     private Button AddNewTask;
-     @FXML
+    @FXML
     private Button CategoryButton;
     @FXML
     private ListView<?> CategoryList;
@@ -25,13 +27,13 @@ public class TaskController implements Initializable {
     @FXML
     private Label Description;
     @FXML
-    private ListView<?> MenuList;
+    private ListView<String> MenuList;
     @FXML
     private Button SaveButton;
     @FXML
     private Label TaskName;
-    @FXML
-    private MenuItem Today;
+    //@FXML
+    //private MenuItem Today;
     @FXML
     private MenuItem Upcoming;
     @FXML
@@ -41,6 +43,9 @@ public class TaskController implements Initializable {
 
     @FXML
     private AnchorPane taskList;
+
+    @FXML
+    private Label Today;
 
     private int taskCount = 0;
 
@@ -67,12 +72,41 @@ public class TaskController implements Initializable {
         textFieldName.clear();
         textAreaDescription.clear();
     }
+
+    public void Notification(String error)
+    {
+        //Pop up with text for error
+    }
+
     //helping method loads all checkBox elements with a label text next to it and a status
     // to a taskList AnchorPane.
-    public void loadTasks(String[] label, boolean[] status) {
+    public void loadTasks(int menu) {
+        String[] label = new String[0];
+        boolean[] status = new boolean[0];
+        if (menu == 0) {
+            //Change to Upcoming
+            String[] text = {"Prepare for exam", "Grocery shopping"};
+            label = text;
+            boolean[] Status = {true, false};
+            status = Status;
+            Today.setText("Upcoming");
+        } else if (menu == 1) {
+            //Change to Today
+            String[] text = {"Do laundry", "Do dishes"};
+            label = text;
+            boolean[] Status = {true, false};
+            status = Status;
+            Today.setText("Today");
+        } else if (menu == 2) {
+            //Change to Calendar
+            Today.setText("Calendar");
+        } else {
+            //ERROR
+            Notification("Error");
+        }
         taskList.getChildren().clear();
-        for(int i = 0; i < label.length; i++)
-        {
+        taskCount = 0;
+        for (int i = 0; i < label.length; i++) {
             CheckBox checkBox = new CheckBox(label[i]);
             checkBox.setSelected(status[i]);
             taskList.getChildren().add(checkBox);
@@ -81,6 +115,20 @@ public class TaskController implements Initializable {
             taskCount++;
         }
     }
+
+    public void menuSetup(String[] text) {
+        ObservableList<String> Text = FXCollections.observableArrayList();
+        for (int i = 0; i < text.length; i++) {
+            Text.add(text[i]);
+        }
+        MenuList.setItems(Text);
+    }
+
+    public void onMenuSelection() {
+        int n = MenuList.getSelectionModel().getSelectedIndex();
+        loadTasks(n);
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -94,6 +142,10 @@ public class TaskController implements Initializable {
         boolean[] DataBase_TaskCompletion = {true, false};
 
         //Loading Tasks
-        loadTasks(DataBase_TaskName, DataBase_TaskCompletion);
+        loadTasks(1);
+
+        //MenuList setup
+        String[] text = {"Upcoming", "Today"};
+        menuSetup(text);
     }
 }
