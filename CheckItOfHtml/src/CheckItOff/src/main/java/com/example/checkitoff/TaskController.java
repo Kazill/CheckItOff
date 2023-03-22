@@ -100,6 +100,7 @@ public class TaskController implements Initializable {
         } else if (menu == 2) {
             //Change to Calendar
             Today.setText("Calendar");
+            AddNewTask.setVisible(false);
         } else {
             //ERROR
             Notification("Error");
@@ -145,7 +146,7 @@ public class TaskController implements Initializable {
         loadTasks(1);
 
         //MenuList setup
-        String[] text = {"Upcoming", "Today"};
+        String[] text = {"Upcoming", "Today", "Calendar"};
         menuSetup(text);
     }
 }
