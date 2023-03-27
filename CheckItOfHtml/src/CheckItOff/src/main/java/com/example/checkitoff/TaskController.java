@@ -142,26 +142,6 @@ public class TaskController implements Initializable {
         loadTasks(n);
     }
 
-    @FXML
-    void onTaskCompleted(ActionEvent event) {
-        CheckBox checkbox = (CheckBox) event.getSource();
-        String taskText = checkbox.getText();
-        Task task = null;
-
-        // Get the corresponding task from the to-do list
-        for (Task t : todoList) {
-            if (t.getText().equals(taskText)) {
-                task = t;
-                break;
-            }
-        }
-
-        if (task != null) {
-            EndTask.completeTask(task);
-
-        }
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //Setting the Task form to be invisible
