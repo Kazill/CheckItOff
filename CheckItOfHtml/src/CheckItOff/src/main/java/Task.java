@@ -4,6 +4,7 @@ public class Task {
     private LocalDate deadline;
 
     public Task(int id, String description, LocalDate deadline) {
+        this.id = id;
         this.description = description;
         this.deadline = deadline;
     }
