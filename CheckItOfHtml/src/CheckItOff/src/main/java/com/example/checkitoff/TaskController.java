@@ -42,6 +42,8 @@ public class TaskController implements Initializable {
     private TextField textFieldName;
     @FXML
     private CheckBox checkBox;
+    @FXML
+    private List<Task> todoList;
 
     @FXML
     private AnchorPane taskList;
@@ -157,10 +159,6 @@ public class TaskController implements Initializable {
         if (task != null) {
             EndTask.completeTask(task);
 
-            // Update the task view
-            String completedTaskText = "✓ " + taskText;
-            int taskIndex = taskListView.getItems().indexOf(taskText);
-            taskListView.getItems().set(taskIndex, completedTaskText);
         }
     }
 
