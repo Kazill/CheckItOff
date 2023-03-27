@@ -34,14 +34,6 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
     // Override toString() method for displaying task in the ListView
 
     @Override
