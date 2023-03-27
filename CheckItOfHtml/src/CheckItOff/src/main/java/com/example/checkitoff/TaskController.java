@@ -42,8 +42,6 @@ public class TaskController implements Initializable {
     private TextField textFieldName;
     @FXML
     private CheckBox checkBox;
-    @FXML
-    private List<Task> todoList;
 
     @FXML
     private AnchorPane taskList;
@@ -52,6 +50,8 @@ public class TaskController implements Initializable {
     private Label Today;
 
     private int taskCount = 0;
+    
+    private List<Task> todoList = new ArrayList<>();
 
     @FXML
     void onAddButtonClick(ActionEvent event) {
