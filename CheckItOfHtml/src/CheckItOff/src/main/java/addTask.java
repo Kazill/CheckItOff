@@ -1,5 +1,3 @@
-package com.example.checkitoff;
-
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import java.time.LocalDate;
