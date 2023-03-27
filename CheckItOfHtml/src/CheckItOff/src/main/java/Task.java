@@ -1,5 +1,3 @@
-package com.example.checkitoff;
-
 public class Task {
     private int id;
     private String description;
