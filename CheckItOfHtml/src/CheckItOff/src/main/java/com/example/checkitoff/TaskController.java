@@ -49,9 +49,14 @@ public class TaskController implements Initializable {
     @FXML
     private Label Today;
 
-    private int taskCount = 0;
-    
-    private List<Task> todoList = new ArrayList<>();
+    @FXML
+    private DatePicker Date;
+
+    private int checkBoxCount = 0;
+    private int descriptionCount = 1;
+    private int dateCount = 2;
+
+    //private List<Task> todoList = new ArrayList<>();
 
     @FXML
     void onAddButtonClick(ActionEvent event) {
@@ -59,13 +64,6 @@ public class TaskController implements Initializable {
         if (!AddBar.isVisible()) {
             AddBar.setVisible(true);
         }
-        String taskName = taskNameField.getText();
-        LocalDate deadline = deadlinePicker.getValue();
-
-        addTask taskManager = new addTask();
-        taskManager.addTask(taskName, deadline);
-
-        AddBar.setVisible(false);
     }
 
     @FXML
@@ -78,7 +76,7 @@ public class TaskController implements Initializable {
         //Data transfer to the database
 
         //Adding task with given data
-
+        addNewTask(textFieldName.getText(), textAreaDescription.getText(), Date.getValue() + "");
         //Form cleanup
         textFieldName.clear();
         textAreaDescription.clear();
@@ -89,25 +87,64 @@ public class TaskController implements Initializable {
         //Pop up with text for error
     }
 
+    public void addNewTask(String name, String description, String date)
+    {
+        CheckBox newCheckBox = new CheckBox(name);
+        Label newDescription = new Label(description);
+        Label newDate = new Label(date);
+        newCheckBox.setSelected(false);
+        taskList.getChildren().add(newCheckBox);
+        taskList.getChildren().add(newDescription);
+        taskList.getChildren().add(newDate);
+        Node node = taskList.getChildren().get(checkBoxCount);
+        node.setLayoutY(10 * checkBoxCount);
+        node = taskList.getChildren().get(descriptionCount);
+        node.setLayoutY(10 * checkBoxCount);
+        node.setLayoutX(50 +  200);
+        node = taskList.getChildren().get(dateCount);
+        node.setLayoutY(10 * checkBoxCount);
+        node.setLayoutX(50 + 500);
+        checkBoxCount = checkBoxCount + 3;
+        descriptionCount = descriptionCount + 3;
+        dateCount = dateCount + 3;
+    }
     //helping method loads all checkBox elements with a label text next to it and a status
     // to a taskList AnchorPane.
     public void loadTasks(int menu) {
-        String[] label = new String[0];
+        String[] name = new String[0];
+        String[] description = new String[0];
         boolean[] status = new boolean[0];
+        String[] date = new String[0];
         if (menu == 0) {
             //Change to Upcoming
-            String[] text = {"Prepare for exam", "Grocery shopping"};
-            label = text;
+            String[] Name = {"Prepare for exam", "Grocery shopping"};
+            name = Name;
+            String[] Description = {"Prepare for tommorows examination on math", "Buy milk, cheese, bread"};
+            description = Description;
             boolean[] Status = {true, false};
             status = Status;
+            String[] Date = {"2023-05-15", "2023-04-30"};
+            date = Date;
+            if(AddNewTask.isVisible() == false)
+            {
+                AddNewTask.setVisible(true);
+            }
             Today.setText("Upcoming");
         } else if (menu == 1) {
             //Change to Today
-            String[] text = {"Do laundry", "Do dishes"};
-            label = text;
+            String[] Name = {"Do laundry", "Do dishes"};
+            name = Name;
+            String[] Description = {"And don't forget to fold the laundry", "do dishes"};
+            description = Description;
             boolean[] Status = {true, false};
             status = Status;
+            String[] Date = {"2023-05-15", "2023-04-30"};
+            date = Date;
             Today.setText("Today");
+            if(AddNewTask.isVisible() == false)
+            {
+                AddNewTask.setVisible(true);
+            }
         } else if (menu == 2) {
             //Change to Calendar
             Today.setText("Calendar");
@@ -118,14 +155,28 @@ public class TaskController implements Initializable {
             Notification("Error");
         }
         taskList.getChildren().clear();
-        taskCount = 0;
-        for (int i = 0; i < label.length; i++) {
-            CheckBox checkBox = new CheckBox(label[i]);
-            checkBox.setSelected(status[i]);
-            taskList.getChildren().add(checkBox);
-            Node node = taskList.getChildren().get(taskCount);
-            node.setLayoutY(20 * taskCount);
-            taskCount++;
+        checkBoxCount = 0;
+        descriptionCount = 1;
+        dateCount = 2;
+        for (int i = 0; i < name.length; i++) {
+            CheckBox newCheckBox = new CheckBox(name[i]);
+            Label newDescription = new Label(description[i]);
+            Label newDate = new Label(date[i]);
+            newCheckBox.setSelected(status[i]);
+            taskList.getChildren().add(newCheckBox);
+            taskList.getChildren().add(newDescription);
+            taskList.getChildren().add(newDate);
+            Node node = taskList.getChildren().get(checkBoxCount);
+            node.setLayoutY(10 * checkBoxCount);
+            node = taskList.getChildren().get(descriptionCount);
+            node.setLayoutY(10 * checkBoxCount);
+            node.setLayoutX(50 + 200);
+            node = taskList.getChildren().get(dateCount);
+            node.setLayoutY(10 * checkBoxCount);
+            node.setLayoutX(50 + 500);
+            checkBoxCount = checkBoxCount + 3;
+            descriptionCount = descriptionCount + 3;
+            dateCount = dateCount + 3;
         }
     }
 
