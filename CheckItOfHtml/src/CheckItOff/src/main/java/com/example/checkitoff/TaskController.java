@@ -21,7 +21,7 @@ public class TaskController implements Initializable {
     @FXML
     private Button CategoryButton;
     @FXML
-    private ListView<?> CategoryList;
+    private ListView<Task> CategoryList;
     @FXML
     private MenuItem Calendar;
     @FXML
@@ -40,6 +40,8 @@ public class TaskController implements Initializable {
     private TextArea textAreaDescription;
     @FXML
     private TextField textFieldName;
+    @FXML
+    private CheckBox checkBox;
 
     @FXML
     private AnchorPane taskList;
@@ -55,6 +57,13 @@ public class TaskController implements Initializable {
         if (!AddBar.isVisible()) {
             AddBar.setVisible(true);
         }
+        String taskName = taskNameField.getText();
+        LocalDate deadline = deadlinePicker.getValue();
+
+        addTask taskManager = new addTask();
+        taskManager.addTask(taskName, deadline);
+
+        AddBar.setVisible(false);
     }
 
     @FXML
@@ -101,6 +110,7 @@ public class TaskController implements Initializable {
             //Change to Calendar
             Today.setText("Calendar");
             AddNewTask.setVisible(false);
+
         } else {
             //ERROR
             Notification("Error");
@@ -130,6 +140,29 @@ public class TaskController implements Initializable {
         loadTasks(n);
     }
 
+    @FXML
+    void onTaskCompleted(ActionEvent event) {
+        CheckBox checkbox = (CheckBox) event.getSource();
+        String taskText = checkbox.getText();
+        Task task = null;
+
+        // Get the corresponding task from the to-do list
+        for (Task t : todoList) {
+            if (t.getText().equals(taskText)) {
+                task = t;
+                break;
+            }
+        }
+
+        if (task != null) {
+            EndTask.completeTask(task);
+
+            // Update the task view
+            String completedTaskText = "✓ " + taskText;
+            int taskIndex = taskListView.getItems().indexOf(taskText);
+            taskListView.getItems().set(taskIndex, completedTaskText);
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
