@@ -63,6 +63,7 @@ public class TaskController implements Initializable {
         //Sets the Task form visible if its already not
         if (!AddBar.isVisible()) {
             AddBar.setVisible(true);
+            AddBar.toFront();
         }
     }
 
