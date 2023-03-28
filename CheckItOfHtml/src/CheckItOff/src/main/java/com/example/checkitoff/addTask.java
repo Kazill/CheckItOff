@@ -1,5 +1,4 @@
-/*
-package com.example.checkitoff;
+/*package com.example.checkitoff;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
@@ -52,5 +51,4 @@ public class addTask {
         // Update the deadline for the task in the to-do list
         task.setDeadline(deadline);
     }
-}
-*/
+}*/

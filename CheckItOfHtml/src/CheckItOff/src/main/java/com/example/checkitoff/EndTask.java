@@ -1,5 +1,4 @@
-/*
-package com.example.checkitoff;
+/*package com.example.checkitoff;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
@@ -38,5 +37,4 @@ public class EndTask {
         taskListView.getItems().set(taskIndex, completedTaskText);
     }
 
-}
-*/
+}*/
