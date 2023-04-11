@@ -18,6 +18,11 @@ public class HelloApplication extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
+        FXMLLoader fxmlLoader1 = new FXMLLoader(HelloApplication.class.getResource("signup.fxml"));
+        Scene scene1 = new Scene(fxmlLoader1.load());
+        stage.setScene(scene1);
+        stage.show();
     }
 
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
 package com.example.checkitoff;
 
-import com.almasb.fxgl.entity.action.Action;
-import com.almasb.fxgl.net.Connection;
+import java.sql.*;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -49,8 +49,8 @@ public class DBUtils {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/nameofDB", "root", "toor");
-            psCheckUserExists = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "root", "");
+            psCheckUserExists = connection.prepareStatement("SELECT * FROM user WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
 
@@ -60,10 +60,10 @@ public class DBUtils {
                 alert.setContentText("You cannot use this username.");
                 alert.show();
             } else {
-                psInsert = connection.prepareStatement("INSERT INTO users (username, password, VALUES) (?, ?)");
+                psInsert = connection.prepareStatement("INSERT INTO user (username, password, VALUES) (?, ?)");
                 psInsert.setString(1, username);
                 psInsert.setString(2, password);
-                psInsert.executeUpate();
+                psInsert.executeUpdate();
 
                 changeScene(event, "logged_in.fxml", "Welcome!", username);
             }
@@ -106,7 +106,7 @@ public class DBUtils {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/nameofDB", "root", "toor");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "root", "");
             preparedStatement = connection.prepareStatement("SELECT password FROM users WHERE username = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();

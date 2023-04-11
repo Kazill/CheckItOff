@@ -52,7 +52,7 @@
                   <Font name="Leelawadee" size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="button_signup" layoutX="82.0" layoutY="271.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="210.0" style="-fx-background-color: #A3EBB1; -fx-cursor: hand;" text="Sign Up">
+            <Button fx:id="button_signup" layoutX="82.0" layoutY="271.0" mnemonicParsing="false" onAction="#onButtonClick_SignUp" prefHeight="28.0" prefWidth="210.0" style="-fx-background-color: #A3EBB1; -fx-cursor: hand;" text="Sign Up">
                <font>
                   <Font name="Leelawadee Bold" size="20.0" />
                </font>

@@ -23,6 +23,7 @@ public class AccountController implements Initializable {
     @FXML
     private TextField tf_username;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -42,4 +43,3 @@ public class AccountController implements Initializable {
 
         }
     }
-}
