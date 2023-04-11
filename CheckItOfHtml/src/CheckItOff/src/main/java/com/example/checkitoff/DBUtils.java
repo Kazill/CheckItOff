@@ -121,6 +121,7 @@ public class DBUtils {
                     String retrievedPassword = resultSet.getString("password");
                     if (retrievedPassword.equals(password)) {
                         changeScene(event, "logged_in.fxml", "Welcome!", username);
+                        openSecondWindow("hello-view.fxml");
                     } else {
                         System.out.println("Passwords did not match!");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -153,6 +154,31 @@ public class DBUtils {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+    public static void closeWindow(ActionEvent event, String fxmlFile) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+
+    public static void openSecondWindow(String fxmlFile) {
+        try {
+            // Užkrauname antrąjį FXML failą
+            FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
+            Parent root = loader.load();
+
+            // Sukuriame antrą langą
+            Stage secondStage = new Stage();
+            secondStage.setTitle("CheckItOff");
+            secondStage.setScene(new Scene(root));
+
+            // Nustatome antrojo lango valdiklį
+            TaskController secondController = loader.getController();
+
+            // Atidaryti antrą langą ir rodyti jį
+            secondStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
