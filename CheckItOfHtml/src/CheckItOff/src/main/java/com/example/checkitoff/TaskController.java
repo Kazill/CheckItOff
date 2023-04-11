@@ -63,7 +63,7 @@ public class TaskController implements Initializable {
     private int checkBoxCount = 0;
     private int descriptionCount = 1;
     private int dateCount = 2;
-    private in colorCount = 2;
+    private int colorCount = 2;
 
     //private List<Task> todoList = new ArrayList<>();
 
