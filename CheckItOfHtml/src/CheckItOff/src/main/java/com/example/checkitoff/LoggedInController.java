@@ -25,6 +25,7 @@ public class LoggedInController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 DBUtils.changeScene(event, "account.fxml", "Log in!", null);
+                DBUtils.closeWindow(event, "hello-view.fxml");
             }
         });
 
