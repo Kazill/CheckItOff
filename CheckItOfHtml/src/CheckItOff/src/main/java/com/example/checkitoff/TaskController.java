@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -51,11 +52,16 @@ public class TaskController implements Initializable {
 
     @FXML
     private DatePicker Date;
+    @FXML
+    private ColorPicker colorPicker;
+    @FXML
+    private Label categoryName;
 
 
     private int checkBoxCount = 0;
     private int descriptionCount = 1;
     private int dateCount = 2;
+    private in colorCount = 2;
 
     //private List<Task> todoList = new ArrayList<>();
 
@@ -193,6 +199,47 @@ public class TaskController implements Initializable {
     public void onMenuSelection() {
         int n = MenuList.getSelectionModel().getSelectedIndex();
         loadTasks(n);
+    }
+    
+    public void addNewCategory(String name, Color categoryColor)
+    {
+        CheckBox newCheckBox = new CheckBox(name);
+        Label newName = new Label(name);
+        ColorPicker newColorPicker = new ColorPicker(categoryColor);
+        newCheckBox.setSelected(false);
+        taskList.getChildren().add(newCheckBox);
+        taskList.getChildren().add(newName);
+        taskList.getChildren().add(newColorPicker);
+        Node node = taskList.getChildren().get(checkBoxCount);
+        node.setLayoutY(10 * checkBoxCount);
+        node = taskList.getChildren().get(descriptionCount);
+        node.setLayoutY(10 * checkBoxCount);
+        node.setLayoutX(50 +  200);
+        node = taskList.getChildren().get(colorCount);
+        node.setLayoutY(10 * checkBoxCount);
+        node.setLayoutX(50 + 500);
+        checkBoxCount = checkBoxCount + 3;
+        descriptionCount = descriptionCount + 3;
+        colorCount = colorCount + 3;
+    }
+    
+    //X button click on category window
+    public void onXButtonClick(ActionEvent actionEvent) {
+
+        //Adding category with given data
+        if (!categoryName.isEmpty()) {
+            addNewCategory(textFieldName.getText(), colorPicker.getValue());
+            //Closing the window after category is added
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.close();
+        } else {
+            //Closing the window
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.close();
+        }
+        //Form cleanup
+        textFieldName.clear();
+        colorPicker.clear();
     }
 
     @Override
