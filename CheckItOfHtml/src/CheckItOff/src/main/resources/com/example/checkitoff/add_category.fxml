@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.17369477911646589" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="524.0" prefWidth="806.0" style="-fx-background-color: cornsilk;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: papayawhip;">
+         <children>
+            <Label alignment="TOP_CENTER" layoutX="321.0" layoutY="19.0" prefHeight="54.0" prefWidth="162.0" text="Category" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="Arial Bold" size="36.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="44.0" fitWidth="185.0" layoutX="6.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Logo.png" />
+               </image>
+            </ImageView>
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="432.0" prefWidth="806.0" style="-fx-background-color: ivory;">
+         <children>
+            <Button layoutX="743.0" layoutY="373.0" mnemonicParsing="false" onAction="#onXButtonClick" prefHeight="28.0" prefWidth="29.0" style="-fx-border-color: black; -fx-background-color: papayawhip;" text="X" fx:id="x" />
+            <TextField layoutX="32.0" layoutY="59.0" prefHeight="26.0" prefWidth="233.0" />
+            <Label layoutX="32.0" layoutY="28.0" text="Category name:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="32.0" layoutY="112.0" text="Category color:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <ColorPicker editable="true" layoutX="32.0" layoutY="145.0">
+               <value>
+                  <Color red="1.0" />
+               </value>
+            </ColorPicker>
+         </children></AnchorPane>
+  </items>
+</SplitPane>
+
