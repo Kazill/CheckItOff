@@ -72,6 +72,7 @@
                   <Font name="Leelawadee Bold" size="20.0" />
                </font>
             </Label>
+            <Label fx:id="tf_error" layoutX="121.0" layoutY="220.0" />
          </children>
       </AnchorPane>
    </children>

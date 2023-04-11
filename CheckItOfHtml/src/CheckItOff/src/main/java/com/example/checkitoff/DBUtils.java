@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 public class DBUtils {
-
+    static Stage stage = new Stage();
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username)
     {
         Parent root = null;
@@ -168,7 +168,6 @@ public class DBUtils {
         }
     }
     public static void closeWindow(ActionEvent event, String fxmlFile) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
 
@@ -179,15 +178,14 @@ public class DBUtils {
             Parent root = loader.load();
 
             // Sukuriame antrą langą
-            Stage secondStage = new Stage();
-            secondStage.setTitle("CheckItOff");
-            secondStage.setScene(new Scene(root));
+            stage.setTitle("CheckItOff");
+            stage.setScene(new Scene(root));
 
             // Nustatome antrojo lango valdiklį
             TaskController secondController = loader.getController();
 
             // Atidaryti antrą langą ir rodyti jį
-            secondStage.show();
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
