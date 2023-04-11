@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -22,7 +23,7 @@ public class TaskController implements Initializable {
     @FXML
     private Button CategoryButton;
     @FXML
-    private ListView<Task> CategoryList;
+    private AnchorPane CategoryList;
     @FXML
     private MenuItem Calendar;
     @FXML
@@ -63,7 +64,8 @@ public class TaskController implements Initializable {
     private int checkBoxCount = 0;
     private int descriptionCount = 1;
     private int dateCount = 2;
-    private int colorCount = 2;
+
+    private int CategoryNameCount = 0;
 
     //private List<Task> todoList = new ArrayList<>();
 
@@ -198,6 +200,11 @@ public class TaskController implements Initializable {
         MenuList.setItems(Text);
     }
 
+    public void onAddNewCategory()
+    {
+        addNewCategory("Vardas", Color.rgb(1, 1 ,1));
+    }
+
     public void onMenuSelection() {
         int n = MenuList.getSelectionModel().getSelectedIndex();
         loadTasks(n);
@@ -205,31 +212,34 @@ public class TaskController implements Initializable {
     
     public void addNewCategory(String name, Color categoryColor)
     {
-        CheckBox newCheckBox = new CheckBox(name);
+
+        //CheckBox newCheckBox = new CheckBox(name); // Nereikia?
         Label newName = new Label(name);
-        ColorPicker newColorPicker = new ColorPicker(categoryColor);
-        newCheckBox.setSelected(false);
-        taskList.getChildren().add(newCheckBox);
-        taskList.getChildren().add(newName);
-        taskList.getChildren().add(newColorPicker);
-        Node node = taskList.getChildren().get(checkBoxCount);
-        node.setLayoutY(10 * checkBoxCount);
-        node = taskList.getChildren().get(descriptionCount);
-        node.setLayoutY(10 * checkBoxCount);
-        node.setLayoutX(50 +  200);
-        node = taskList.getChildren().get(colorCount);
-        node.setLayoutY(10 * checkBoxCount);
-        node.setLayoutX(50 + 500);
-        checkBoxCount = checkBoxCount + 3;
-        descriptionCount = descriptionCount + 3;
-        colorCount = colorCount + 3;
+        newName.setTextFill( Color.rgb(255, 0, 0));
+        // Change color of the category name using setTextFill() EX: newName.setTextFill(Color.rgb(255, 0, 0));
+        //ColorPicker newColorPicker = new ColorPicker(categoryColor);
+        //newCheckBox.setSelected(false); // Nereikia?
+        //taskList.getChildren().add(newCheckBox); // Nereikia?
+        CategoryList.getChildren().add(newName);
+        //taskList.getChildren().add(newColorPicker); // Nereikia?
+        //Node node = taskList.getChildren().get(checkBoxCount); // Nereikia?
+        //node.setLayoutY(10 * checkBoxCount); // Nereikia?
+        Node node = CategoryList.getChildren().get(CategoryNameCount);  // Čia vietoje descriptionCount turi būti kitas kintamasis, kuris skaičiuotų kelintas kategorijos vardo elementas čia yra.
+        node.setLayoutY(10 * CategoryNameCount); // Priklausomai nuo kelintas kategorijos vardo elementas čia yra jis gaus naują poziciją kur ir padės vizualiai
+        node.setLayoutX(10);
+        //node = taskList.getChildren().get(colorCount); // Nereikia?
+        //node.setLayoutY(10 * checkBoxCount); // Nereikia?
+        //node.setLayoutX(50 + 500); // Nereikia?
+        //checkBoxCount = checkBoxCount + 3; // Nereikia?
+        CategoryNameCount = CategoryNameCount + 1;
+        //colorCount = colorCount + 3; // Nereikia?
     }
     
     //X button click on category window
     public void onXButtonClick(ActionEvent actionEvent) {
 
         //Adding category with given data
-        if (!categoryName.isEmpty()) {
+        if (categoryName.getText() != "") {
             addNewCategory(textFieldName.getText(), colorPicker.getValue());
             //Closing the window after category is added
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -241,7 +251,7 @@ public class TaskController implements Initializable {
         }
         //Form cleanup
         textFieldName.clear();
-        colorPicker.clear();
+        //colorPicker.clear();
     }
 
     @Override

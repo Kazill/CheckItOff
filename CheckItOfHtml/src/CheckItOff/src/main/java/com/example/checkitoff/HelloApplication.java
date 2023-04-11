@@ -19,10 +19,11 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+        Stage stage1 = new Stage();
         FXMLLoader fxmlLoader1 = new FXMLLoader(HelloApplication.class.getResource("signup.fxml"));
         Scene scene1 = new Scene(fxmlLoader1.load());
-        stage.setScene(scene1);
-        stage.show();
+        stage1.setScene(scene1);
+        stage1.show();
     }
 
     public static void main(String[] args) {

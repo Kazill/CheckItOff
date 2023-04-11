@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 
 
@@ -27,7 +28,7 @@ public class DBUtils {
                 LoggedInController loggedInController = loader.getController();
                 loggedInController.setUserInformation(username);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         else {
@@ -50,7 +51,9 @@ public class DBUtils {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://78.60.16.58:3306/checkitoff", "root", "");
+            // load and register JDBC driver for MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "", "");
             psCheckUserExists = connection.prepareStatement("SELECT * FROM user WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
@@ -61,7 +64,7 @@ public class DBUtils {
                 alert.setContentText("You cannot use this username.");
                 alert.show();
             } else {
-                psInsert = connection.prepareStatement("INSERT INTO user (username, password, VALUES) (?, ?)");
+                psInsert = connection.prepareStatement("INSERT INTO `user` (`ID`, `Username`, `Password`) VALUES (NULL, ?, ?)");
                 psInsert.setString(1, username);
                 psInsert.setString(2, password);
                 psInsert.executeUpdate();
@@ -71,6 +74,8 @@ public class DBUtils {
         } catch (SQLException e) {
             e.printStackTrace();
 
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         } finally {
             if (resultSet != null) {
                 try {
@@ -108,8 +113,10 @@ public class DBUtils {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://78.60.16.58:3306/checkitoff", "root", "");
-            preparedStatement = connection.prepareStatement("SELECT password FROM users WHERE username = ?");
+            // load and register JDBC driver for MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "root", "");
+            preparedStatement = connection.prepareStatement("SELECT password FROM user WHERE username = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
 
@@ -132,7 +139,9 @@ public class DBUtils {
                 }
             }
         } catch (SQLException e) {
-             e.printStackTrace();
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         } finally {
             if (resultSet != null) {
                 try {
