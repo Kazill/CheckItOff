@@ -56,6 +56,8 @@ public class TaskController implements Initializable {
     private ColorPicker colorPicker;
     @FXML
     private Label categoryName;
+    @FXML
+    private Button X;
 
 
     private int checkBoxCount = 0;
