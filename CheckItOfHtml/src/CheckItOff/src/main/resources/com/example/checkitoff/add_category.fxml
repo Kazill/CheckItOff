@@ -28,7 +28,7 @@
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="432.0" prefWidth="806.0" style="-fx-background-color: ivory;">
          <children>
-            <Button layoutX="743.0" layoutY="373.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="29.0" style="-fx-border-color: black; -fx-background-color: papayawhip;" text="X" />
+            <Button layoutX="743.0" layoutY="373.0" mnemonicParsing="false" onAction="#onXButtonClick" prefHeight="28.0" prefWidth="29.0" style="-fx-border-color: black; -fx-background-color: papayawhip;" text="X" fx:id="x" />
             <TextField layoutX="32.0" layoutY="59.0" prefHeight="26.0" prefWidth="233.0" />
             <Label layoutX="32.0" layoutY="28.0" text="Category name:">
                <font>
@@ -48,3 +48,4 @@
          </children></AnchorPane>
   </items>
 </SplitPane>
+
