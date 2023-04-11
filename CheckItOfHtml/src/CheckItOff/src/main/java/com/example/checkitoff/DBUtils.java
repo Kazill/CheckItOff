@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
 public class DBUtils {
 
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username)
@@ -49,7 +50,7 @@ public class DBUtils {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://78.60.16.58:3306/checkitoff", "root", "");
             psCheckUserExists = connection.prepareStatement("SELECT * FROM user WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
@@ -69,6 +70,7 @@ public class DBUtils {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+
         } finally {
             if (resultSet != null) {
                 try {
@@ -106,7 +108,7 @@ public class DBUtils {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://78.60.16.58:3306/checkitoff", "root", "");
             preparedStatement = connection.prepareStatement("SELECT password FROM users WHERE username = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
