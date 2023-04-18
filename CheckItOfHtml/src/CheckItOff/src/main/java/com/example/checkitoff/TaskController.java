@@ -226,10 +226,10 @@ public class TaskController implements Initializable {
 
     public void addNewCategory(String name, Color categoryColor) {
         Label newName = new Label(name);
-        newName.setTextFill(Color.rgb(255, 0, 0));
+        newName.setTextFill(categoryColor);
         CategoryList.getChildren().add(newName);
-        Node node = CategoryList.getChildren().get(CategoryNameCount);  // Čia vietoje descriptionCount turi būti kitas kintamasis, kuris skaičiuotų kelintas kategorijos vardo elementas čia yra.
-        node.setLayoutY(10 * CategoryNameCount); // Priklausomai nuo kelintas kategorijos vardo elementas čia yra jis gaus naują poziciją kur ir padės vizualiai
+        Node node = CategoryList.getChildren().get(CategoryNameCount);
+        node.setLayoutY(10 * CategoryNameCount);
         node.setLayoutX(10);
         CategoryNameCount = CategoryNameCount + 1;
     }
