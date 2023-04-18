@@ -53,7 +53,7 @@ public class DBUtils {
         try {
             // load and register JDBC driver for MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "", "");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
             psCheckUserExists = connection.prepareStatement("SELECT * FROM user WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
@@ -115,7 +115,7 @@ public class DBUtils {
         try {
             // load and register JDBC driver for MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/checkitoff", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
             preparedStatement = connection.prepareStatement("SELECT password FROM user WHERE username = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
