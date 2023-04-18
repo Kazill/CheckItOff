@@ -225,8 +225,6 @@ public class TaskController implements Initializable {
     }
 
     public void addNewCategory(String name, Color categoryColor) {
-
-        //CheckBox newCheckBox = new CheckBox(name); // Nereikia?
         Label newName = new Label(name);
         newName.setTextFill(Color.rgb(255, 0, 0));
         CategoryList.getChildren().add(newName);
