@@ -11,7 +11,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.17369477911646589" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="524.0" prefWidth="806.0" style="-fx-background-color: cornsilk;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.17369477911646589" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="524.0" prefWidth="806.0" style="-fx-background-color: cornsilk;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.checkitoff.TaskController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: papayawhip;">
          <children>
@@ -29,7 +29,7 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="432.0" prefWidth="806.0" style="-fx-background-color: ivory;">
          <children>
             <Button layoutX="743.0" layoutY="373.0" mnemonicParsing="false" onAction="#onXButtonClick" prefHeight="28.0" prefWidth="29.0" style="-fx-border-color: black; -fx-background-color: papayawhip;" text="X" fx:id="x" />
-            <TextField layoutX="32.0" layoutY="59.0" prefHeight="26.0" prefWidth="233.0" />
+            <TextField fx:id="categoryName" layoutX="32.0" layoutY="59.0" prefHeight="26.0" prefWidth="233.0" />
             <Label layoutX="32.0" layoutY="28.0" text="Category name:">
                <font>
                   <Font size="16.0" />
@@ -40,7 +40,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <ColorPicker editable="true" layoutX="32.0" layoutY="145.0">
+            <ColorPicker fx:id="colorPicker" editable="true" layoutX="32.0" layoutY="145.0">
                <value>
                   <Color red="1.0" />
                </value>
@@ -48,4 +48,3 @@
          </children></AnchorPane>
   </items>
 </SplitPane>
-

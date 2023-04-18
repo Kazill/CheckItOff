@@ -4,13 +4,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -56,7 +60,7 @@ public class TaskController implements Initializable {
     @FXML
     private ColorPicker colorPicker;
     @FXML
-    private Label categoryName;
+    private TextField categoryName;
     @FXML
     private Button X;
 
@@ -94,13 +98,11 @@ public class TaskController implements Initializable {
         textAreaDescription.clear();
     }
 
-    public void Notification(String error)
-    {
+    public void Notification(String error) {
         //Pop up with text for error
     }
 
-    public void addNewTask(String name, String description, String date)
-    {
+    public void addNewTask(String name, String description, String date) {
         CheckBox newCheckBox = new CheckBox(name);
         Label newDescription = new Label(description);
         Label newDate = new Label(date);
@@ -112,7 +114,7 @@ public class TaskController implements Initializable {
         node.setLayoutY(10 * checkBoxCount);
         node = taskList.getChildren().get(descriptionCount);
         node.setLayoutY(10 * checkBoxCount);
-        node.setLayoutX(50 +  200);
+        node.setLayoutX(50 + 200);
         node = taskList.getChildren().get(dateCount);
         node.setLayoutY(10 * checkBoxCount);
         node.setLayoutX(50 + 500);
@@ -120,6 +122,7 @@ public class TaskController implements Initializable {
         descriptionCount = descriptionCount + 3;
         dateCount = dateCount + 3;
     }
+
     //helping method loads all checkBox elements with a label text next to it and a status
     // to a taskList AnchorPane.
     public void loadTasks(int menu) {
@@ -137,8 +140,7 @@ public class TaskController implements Initializable {
             status = Status;
             String[] Date = {"2023-05-15", "2023-04-30"};
             date = Date;
-            if(AddNewTask.isVisible() == false)
-            {
+            if (AddNewTask.isVisible() == false) {
                 AddNewTask.setVisible(true);
             }
             Today.setText("Upcoming");
@@ -153,8 +155,7 @@ public class TaskController implements Initializable {
             String[] Date = {"2023-05-15", "2023-04-30"};
             date = Date;
             Today.setText("Today");
-            if(AddNewTask.isVisible() == false)
-            {
+            if (AddNewTask.isVisible() == false) {
                 AddNewTask.setVisible(true);
             }
         } else if (menu == 2) {
@@ -200,47 +201,49 @@ public class TaskController implements Initializable {
         MenuList.setItems(Text);
     }
 
-    public void onAddNewCategory()
-    {
-        addNewCategory("Vardas", Color.rgb(1, 1 ,1));
+    public void onAddNewCategory() throws IOException {
+        Stage category = new Stage();
+        // Užkrauname antrąjį FXML failą
+        FXMLLoader loader = new FXMLLoader(TaskController.class.getResource("add_category.fxml"));
+        Parent root = loader.load();
+
+        // Sukuriame antrą langą
+        category.setTitle("CheckItOff");
+        category.setScene(new Scene(root));
+
+        // Nustatome antrojo lango valdiklį
+        TaskController secondController = loader.getController();
+
+        // Atidaryti antrą langą ir rodyti jį
+        category.show();
+        addNewCategory("yes", Color.color(1,1,1));
     }
 
     public void onMenuSelection() {
         int n = MenuList.getSelectionModel().getSelectedIndex();
         loadTasks(n);
     }
-    
-    public void addNewCategory(String name, Color categoryColor)
-    {
+
+    public void addNewCategory(String name, Color categoryColor) {
 
         //CheckBox newCheckBox = new CheckBox(name); // Nereikia?
         Label newName = new Label(name);
-        newName.setTextFill( Color.rgb(255, 0, 0));
-        // Change color of the category name using setTextFill() EX: newName.setTextFill(Color.rgb(255, 0, 0));
-        //ColorPicker newColorPicker = new ColorPicker(categoryColor);
-        //newCheckBox.setSelected(false); // Nereikia?
-        //taskList.getChildren().add(newCheckBox); // Nereikia?
+        newName.setTextFill(Color.rgb(255, 0, 0));
         CategoryList.getChildren().add(newName);
-        //taskList.getChildren().add(newColorPicker); // Nereikia?
-        //Node node = taskList.getChildren().get(checkBoxCount); // Nereikia?
-        //node.setLayoutY(10 * checkBoxCount); // Nereikia?
         Node node = CategoryList.getChildren().get(CategoryNameCount);  // Čia vietoje descriptionCount turi būti kitas kintamasis, kuris skaičiuotų kelintas kategorijos vardo elementas čia yra.
         node.setLayoutY(10 * CategoryNameCount); // Priklausomai nuo kelintas kategorijos vardo elementas čia yra jis gaus naują poziciją kur ir padės vizualiai
         node.setLayoutX(10);
-        //node = taskList.getChildren().get(colorCount); // Nereikia?
-        //node.setLayoutY(10 * checkBoxCount); // Nereikia?
-        //node.setLayoutX(50 + 500); // Nereikia?
-        //checkBoxCount = checkBoxCount + 3; // Nereikia?
         CategoryNameCount = CategoryNameCount + 1;
-        //colorCount = colorCount + 3; // Nereikia?
     }
-    
+
     //X button click on category window
     public void onXButtonClick(ActionEvent actionEvent) {
 
         //Adding category with given data
         if (categoryName.getText() != "") {
-            addNewCategory(textFieldName.getText(), colorPicker.getValue());
+            //if (CategoryList != null) {
+                addNewCategory(categoryName.getText(), colorPicker.getValue());
+            //}
             //Closing the window after category is added
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.close();
@@ -250,14 +253,16 @@ public class TaskController implements Initializable {
             stage.close();
         }
         //Form cleanup
-        textFieldName.clear();
+        categoryName.clear();
         //colorPicker.clear();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //Setting the Task form to be invisible
-        AddBar.setVisible(false);
+        if (AddBar != null) {
+            AddBar.setVisible(false);
+        }
 
         //Loading DataBase data to selected menu type.
 
@@ -265,11 +270,15 @@ public class TaskController implements Initializable {
         String[] DataBase_TaskName = {"Do laundry", "Do dishes"};
         boolean[] DataBase_TaskCompletion = {true, false};
 
-        //Loading Tasks
-        loadTasks(1);
+        if (Today != null) {
+            //Loading Tasks
+            loadTasks(1);
+        }
 
         //MenuList setup
         String[] text = {"Upcoming", "Today", "Calendar"};
-        menuSetup(text);
+        if (MenuList != null) {
+            menuSetup(text);
+        }
     }
 }
