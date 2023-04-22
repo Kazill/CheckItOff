@@ -66,7 +66,8 @@ public class TaskController implements Initializable {
     private TextField categoryName;
     @FXML
     private Button X;
-
+    @FXML
+    private ChoiceBox CategoryPicker;
 
     //Calendar
     ZonedDateTime dateFocus;
@@ -90,7 +91,6 @@ public class TaskController implements Initializable {
 
     private int CategoryNameCount = 0;
 
-    //private List<Task> todoList = new ArrayList<>();
 
     @FXML
     void onAddButtonClick(ActionEvent event) {
@@ -239,7 +239,10 @@ public class TaskController implements Initializable {
 
         // Atidaryti antrą langą ir rodyti jį
         category.show();
-        addNewCategory("yes", Color.color(1,1,1));
+        addNewCategory("yes", Color.color(1,1,1));//addNewCategory(categoryName.getText(), colorPicker.getValue());
+        ObservableList CategoryItems = CategoryPicker.getItems();
+        CategoryItems.add(CategoryNameCount / 2, "yes");//CategoryItems.add(CategoryNameCount / 2, categoryName.getText())
+        CategoryPicker.setItems(CategoryItems);
     }
 
     public void onMenuSelection() {
@@ -261,7 +264,7 @@ public class TaskController implements Initializable {
     public void onXButtonClick(ActionEvent actionEvent) {
 
         //Adding category with given data
-        if (categoryName.getText() != "") {
+        if (categoryName.getText() != "" && CategoryList != null) {
             //if (CategoryList != null) {
                 addNewCategory(categoryName.getText(), colorPicker.getValue());
             //}
@@ -282,7 +285,9 @@ public class TaskController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-        drawCalendar();
+        if(year != null){
+            drawCalendar();
+        }
         //Setting the Task form to be invisible
         if (AddBar != null) {
             AddBar.setVisible(false);
