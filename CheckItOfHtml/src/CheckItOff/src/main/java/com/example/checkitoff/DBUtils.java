@@ -16,12 +16,12 @@ import java.io.IOException;
 
 public class DBUtils {
     static Stage stage = new Stage();
-    public static void changeScene(ActionEvent event, String fxmlFile, String title, String username)
-    {
+    static String userID = null;
+
+    public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
         Parent root = null;
 
-        if (username != null)
-        {
+        if (username != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
                 root = loader.load();
@@ -30,8 +30,7 @@ public class DBUtils {
             } catch (IOException e) {
                 //e.printStackTrace();
             }
-        }
-        else {
+        } else {
             try {
                 root = FXMLLoader.load(DBUtils.class.getResource(fxmlFile));
             } catch (IOException e) {
@@ -70,6 +69,7 @@ public class DBUtils {
                 psInsert.executeUpdate();
 
                 changeScene(event, "logged_in.fxml", "Welcome!", username);
+                openSecondWindow("hello-view.fxml");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -116,7 +116,7 @@ public class DBUtils {
             // load and register JDBC driver for MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
-            preparedStatement = connection.prepareStatement("SELECT password FROM user WHERE username = ?");
+            preparedStatement = connection.prepareStatement("SELECT ID, password FROM user WHERE username = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
 
@@ -128,9 +128,11 @@ public class DBUtils {
             } else {
                 while (resultSet.next()) {
                     String retrievedPassword = resultSet.getString("password");
+                    String retrievedID = resultSet.getString("ID");
                     if (retrievedPassword.equals(password)) {
                         changeScene(event, "logged_in.fxml", "Welcome!", username);
                         openSecondWindow("hello-view.fxml");
+                        userID = retrievedID;
                     } else {
                         System.out.println("Passwords did not match!");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -167,6 +169,7 @@ public class DBUtils {
             }
         }
     }
+
     public static void closeWindow(ActionEvent event, String fxmlFile) {
         stage.close();
     }
@@ -189,5 +192,59 @@ public class DBUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sendTaskForm(String name, String description, String date) {
+        if (userID != null && name != null && description != null && date != null && !name.equals("") && !description.equals("") && !date.equals("null")) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            try {
+                // load and register JDBC driver for MySQL
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
+                preparedStatement = connection.prepareStatement("INSERT INTO `task` (`ID`, `Name`, `Description`, `Date`) VALUES (?, ?, ?, ?)");
+                preparedStatement.setInt(1, Integer.parseInt(userID));
+                preparedStatement.setString(2, name);
+                preparedStatement.setString(3, description);
+                preparedStatement.setString(4, date);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Task form was not filled correctly or the user is offline.");
+            alert.show();
+        }
+    }
+
+    public static String[] getTaskForm() {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String Name = null;
+        String Description = null;
+        String Date = null;
+        try {
+            // load and register JDBC driver for MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
+            preparedStatement = connection.prepareStatement("SELECT * FROM `task` WHERE ID = ?");
+            preparedStatement.setString(1, userID);
+            resultSet = preparedStatement.executeQuery();
+            Name = resultSet.getString("Name");
+            Description = resultSet.getString("Description");
+            Date = resultSet.getString("Date");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        String[] result = {Name, Description, Date};
+        return result;
     }
 }
