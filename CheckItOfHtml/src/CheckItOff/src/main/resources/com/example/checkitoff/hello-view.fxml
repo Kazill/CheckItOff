@@ -75,7 +75,7 @@
                </children>
             </AnchorPane>
             <AnchorPane fx:id="taskList" layoutX="14.0" layoutY="126.0" prefHeight="668.0" prefWidth="668.0" />
-            <AnchorPane fx:id="ShowCalendar" prefHeight="799.0" prefWidth="1022.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="ShowCalendar" prefHeight="799.0" prefWidth="1022.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button layoutX="677.0" layoutY="52.0" mnemonicParsing="false" onAction="#forwardOneMonth" prefHeight="26.0" prefWidth="34.0" text="&gt;" />
                   <Button layoutX="487.0" layoutY="51.0" mnemonicParsing="false" onAction="#backOneMonth" prefHeight="26.0" prefWidth="34.0" text="&lt;" />
