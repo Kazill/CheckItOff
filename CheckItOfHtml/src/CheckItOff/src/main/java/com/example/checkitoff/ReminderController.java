@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,47 +19,50 @@ import javafx.stage.Stage;
 
 
 public class ReminderController implements Initializable {
-
-    @FXML
-    static void initialize() {
+     
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         // Start timer to check for reminders every hour
         Timer timer = new Timer();
         timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
     }
 
     private static void showReminder(String taskName, LocalDate taskDeadline) throws IOException {
-        // Check if task is due today or was due yesterday
-        LocalDate today = LocalDate.now();
-        if (taskDeadline.isEqual(today)) {
-            // Create reminder/notification UI
-            FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
-            Parent root = loader.load();
-            Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
-            messageLabel.setText("You have a task due today: " + taskName);
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.show();
-        } else if (taskDeadline.isBefore(today)) {
-            // Create reminder/notification UI
-            FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
-            Parent root = loader.load();
-            Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
-            if (messageLabel != null) {
-                messageLabel.setText("You missed a deadline yesterday: " + taskName);
+        Platform.runLater(() -> {
+            // Check if task is due today or was due yesterday
+            LocalDate today = LocalDate.now();
+            if (taskDeadline.isEqual(today)) {
+                // Create reminder/notification UI
+                FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
+                try {
+                    Parent root = loader.load();
+                    Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+                    messageLabel.setText("You have a task due today: " + taskName);
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (taskDeadline.isBefore(today)) {
+                // Create reminder/notification UI
+                FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
+                try {
+                    Parent root = loader.load();
+                    Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+                    if (messageLabel != null) {
+                        messageLabel.setText("You missed a deadline yesterday: " + taskName);
+                    }
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.show();
-        }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Start timer to check for reminders every hour
-        Timer timer = new Timer();
-        timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
+        });
     }
 
     static class RemindersTask extends TimerTask {
