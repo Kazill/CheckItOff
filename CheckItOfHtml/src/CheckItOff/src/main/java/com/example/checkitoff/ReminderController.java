@@ -19,6 +19,9 @@ import javafx.stage.Stage;
 
 
 public class ReminderController implements Initializable {
+    
+    @FXML
+    private Label notifLabel;
      
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -27,7 +30,7 @@ public class ReminderController implements Initializable {
         timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
     }
 
-    private static void showReminder(String taskName, LocalDate taskDeadline) throws IOException {
+    private void showReminder(String taskName, LocalDate taskDeadline) throws IOException {
         Platform.runLater(() -> {
             // Check if task is due today or was due yesterday
             LocalDate today = LocalDate.now();
@@ -36,8 +39,8 @@ public class ReminderController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
                 try {
                     Parent root = loader.load();
-                    Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
-                    messageLabel.setText("You have a task due today: " + taskName);
+                    //Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+                    notifLabel.setText("You have a task due today: " + taskName);
                     Scene scene = new Scene(root);
                     Stage stage = new Stage();
                     stage.setScene(scene);
@@ -50,10 +53,10 @@ public class ReminderController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
                 try {
                     Parent root = loader.load();
-                    Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
-                    if (messageLabel != null) {
-                        messageLabel.setText("You missed a deadline yesterday: " + taskName);
-                    }
+                    //Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+                    //if (messageLabel != null) {
+                    notifLabel.setText("You missed a deadline yesterday: " + taskName);
+                    //}
                     Scene scene = new Scene(root);
                     Stage stage = new Stage();
                     stage.setScene(scene);
@@ -65,7 +68,7 @@ public class ReminderController implements Initializable {
         });
     }
 
-    static class RemindersTask extends TimerTask {
+    class RemindersTask extends TimerTask {
         @Override
         public void run() {
             // Retrieve task data from database
