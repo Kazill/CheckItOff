@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class TaskController implements Initializable {
 
@@ -225,6 +226,7 @@ public class TaskController implements Initializable {
     }
 
     public void onAddNewCategory() throws IOException {
+
         Stage category = new Stage();
         // Užkrauname antrąjį FXML failą
         FXMLLoader loader = new FXMLLoader(TaskController.class.getResource("add_category.fxml"));
@@ -283,6 +285,8 @@ public class TaskController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ReminderController.initialize();
+
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
         if(year != null){

@@ -17,50 +17,59 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 
-public class ReminderController {
+public class ReminderController implements Initializable {
 
-        @FXML
-        private void initialize() {
-            // Start timer to check for reminders every hour
-            Timer timer = new Timer();
-            timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
-        }
+    @FXML
+    static void initialize() {
+        // Start timer to check for reminders every hour
+        Timer timer = new Timer();
+        timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
+    }
 
-        private void showReminder(String taskName, LocalDate taskDeadline) throws IOException {
-            // Check if task is due today or was due yesterday
-            LocalDate today = LocalDate.now();
-            if (taskDeadline.isEqual(today)) {
-                // Create reminder/notification UI
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("notification.fxml"));
-                Parent root = loader.load();
-                Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
-                messageLabel.setText("You have a task due today: " + taskName);
-                Scene scene = new Scene(root);
-                Stage stage = new Stage();
-                stage.setScene(scene);
-                stage.show();
-            } else if (taskDeadline.isBefore(today)) {
-                // Create reminder/notification UI
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("notification.fxml"));
-                Parent root = loader.load();
-                Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+    private static void showReminder(String taskName, LocalDate taskDeadline) throws IOException {
+        // Check if task is due today or was due yesterday
+        LocalDate today = LocalDate.now();
+        if (taskDeadline.isEqual(today)) {
+            // Create reminder/notification UI
+            FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
+            Parent root = loader.load();
+            Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+            messageLabel.setText("You have a task due today: " + taskName);
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        } else if (taskDeadline.isBefore(today)) {
+            // Create reminder/notification UI
+            FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
+            Parent root = loader.load();
+            Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+            if (messageLabel != null) {
                 messageLabel.setText("You missed a deadline yesterday: " + taskName);
-                Scene scene = new Scene(root);
-                Stage stage = new Stage();
-                stage.setScene(scene);
-                stage.show();
             }
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
         }
+    }
 
-        private class RemindersTask extends TimerTask {
-            @Override
-            public void run() {
-                // Retrieve task data from database
-                String[] taskData = DBUtils.getTaskForm(); // replace with actual user ID
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Start timer to check for reminders every hour
+        Timer timer = new Timer();
+        timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
+    }
+
+    static class RemindersTask extends TimerTask {
+        @Override
+        public void run() {
+            // Retrieve task data from database
+            String[] taskData = DBUtils.getTaskForm(); // replace with actual user ID
+            if (taskData != null) {
                 String taskName = taskData[0];
                 String taskDescription = taskData[1];
                 LocalDate taskDeadline = LocalDate.parse(taskData[2]);
-
                 // Show reminder if necessary
                 try {
                     showReminder(taskName, taskDeadline);
@@ -70,6 +79,7 @@ public class ReminderController {
             }
         }
     }
+}
 
 /*
     @FXML

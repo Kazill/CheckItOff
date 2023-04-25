@@ -130,9 +130,9 @@ public class DBUtils {
                     String retrievedPassword = resultSet.getString("password");
                     String retrievedID = resultSet.getString("ID");
                     if (retrievedPassword.equals(password)) {
+                        userID = retrievedID;
                         changeScene(event, "logged_in.fxml", "Welcome!", username);
                         openSecondWindow("hello-view.fxml");
-                        userID = retrievedID;
                     } else {
                         System.out.println("Passwords did not match!");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -228,6 +228,7 @@ public class DBUtils {
         String Name = null;
         String Description = null;
         String Date = null;
+        String[] result = null;
         try {
             // load and register JDBC driver for MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -235,16 +236,18 @@ public class DBUtils {
             preparedStatement = connection.prepareStatement("SELECT * FROM `task` WHERE ID = ?");
             preparedStatement.setString(1, userID);
             resultSet = preparedStatement.executeQuery();
-            Name = resultSet.getString("Name");
-            Description = resultSet.getString("Description");
-            Date = resultSet.getString("Date");
-
+            if(resultSet.next()) {
+                Name = resultSet.getString("Name");
+                Description = resultSet.getString("Description");
+                Date = resultSet.getString("Date");
+                String[] rs = {Name, Description, Date};
+                result = rs;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        String[] result = {Name, Description, Date};
         return result;
     }
 }
