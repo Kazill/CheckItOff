@@ -22,12 +22,17 @@ public class ReminderController implements Initializable {
     
     @FXML
     private Label notifLabel;
-     
+
+    public static void initialize() {
+        // Start timer to check for reminders every hour
+        //Timer timer = new Timer();
+        //timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Start timer to check for reminders every hour
-        Timer timer = new Timer();
-        timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
+        //Timer timer = new Timer();
+        //timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
     }
 
     private void showReminder(String taskName, LocalDate taskDeadline) throws IOException {

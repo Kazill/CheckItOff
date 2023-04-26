@@ -1,14 +1,17 @@
 package com.example.checkitoff;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
@@ -18,6 +21,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -241,7 +245,7 @@ public class TaskController implements Initializable {
 
         // Atidaryti antrą langą ir rodyti jį
         category.show();
-        addNewCategory("yes", Color.color(1,1,1));//addNewCategory(categoryName.getText(), colorPicker.getValue());
+        addNewCategory("yes", Color.color(1, 1, 1));//addNewCategory(categoryName.getText(), colorPicker.getValue());
         ObservableList CategoryItems = CategoryPicker.getItems();
         CategoryItems.add(CategoryNameCount / 2, "yes");//CategoryItems.add(CategoryNameCount / 2, categoryName.getText())
         CategoryPicker.setItems(CategoryItems);
@@ -268,7 +272,7 @@ public class TaskController implements Initializable {
         //Adding category with given data
         if (categoryName.getText() != "" && CategoryList != null) {
             //if (CategoryList != null) {
-                addNewCategory(categoryName.getText(), colorPicker.getValue());
+            addNewCategory(categoryName.getText(), colorPicker.getValue());
             //}
             //Closing the window after category is added
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -282,14 +286,14 @@ public class TaskController implements Initializable {
         categoryName.clear();
         //colorPicker.clear();
     }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ReminderController.initialize();
-
+            // Start timer to check for reminders every hour
+            //Timer timer = new Timer();
+            //timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-        if(year != null){
+        if (year != null) {
             drawCalendar();
         }
         //Setting the Task form to be invisible
@@ -330,7 +334,7 @@ public class TaskController implements Initializable {
         drawCalendar();
     }
 
-    private void drawCalendar(){
+    private void drawCalendar() {
         year.setText(String.valueOf(dateFocus.getYear()));
         month.setText(String.valueOf(dateFocus.getMonth()));
 
@@ -345,10 +349,10 @@ public class TaskController implements Initializable {
 
         int monthMaxDate = dateFocus.getMonth().maxLength();
         //Check for leap year
-        if(dateFocus.getYear() % 4 != 0 && monthMaxDate == 29){
+        if (dateFocus.getYear() % 4 != 0 && monthMaxDate == 29) {
             monthMaxDate = 28;
         }
-        int dateOffset = ZonedDateTime.of(dateFocus.getYear(), dateFocus.getMonthValue(), 1,0,0,0,0,dateFocus.getZone()).getDayOfWeek().getValue();
+        int dateOffset = ZonedDateTime.of(dateFocus.getYear(), dateFocus.getMonthValue(), 1, 0, 0, 0, 0, dateFocus.getZone()).getDayOfWeek().getValue();
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
@@ -358,30 +362,35 @@ public class TaskController implements Initializable {
                 rectangle.setFill(Color.TRANSPARENT);
                 rectangle.setStroke(Color.BLACK);
                 rectangle.setStrokeWidth(strokeWidth);
-                double rectangleWidth =(calendarWidth/7) - strokeWidth - spacingH;
+                double rectangleWidth = (calendarWidth / 7) - strokeWidth - spacingH;
                 rectangle.setWidth(rectangleWidth);
-                double rectangleHeight = (calendarHeight/6) - strokeWidth - spacingV;
+                double rectangleHeight = (calendarHeight / 6) - strokeWidth - spacingV;
                 rectangle.setHeight(rectangleHeight);
                 stackPane.getChildren().add(rectangle);
-
-                int calculatedDate = (j+1)+(7*i);
-                if(calculatedDate > dateOffset){
+                int calculatedDate = (j + 1) + (7 * i);
+                if (calculatedDate > dateOffset) {
                     int currentDate = calculatedDate - dateOffset;
-                    if(currentDate <= monthMaxDate){
+                    if (currentDate <= monthMaxDate) {
                         Text date = new Text(String.valueOf(currentDate));
-                        double textTranslationY = - (rectangleHeight / 2) * 0.75;
+                        double textTranslationY = -(rectangleHeight / 2) * 0.75;
                         date.setTranslateY(textTranslationY);
                         stackPane.getChildren().add(date);
 
                         List<CalendarActivity> calendarActivities = calendarActivityMap.get(currentDate);
-                        if(calendarActivities != null){
+                        if (calendarActivities != null) {
                             createCalendarActivity(calendarActivities, rectangleHeight, rectangleWidth, stackPane);
                         }
                     }
-                    if(today.getYear() == dateFocus.getYear() && today.getMonth() == dateFocus.getMonth() && today.getDayOfMonth() == currentDate){
+                    if (today.getYear() == dateFocus.getYear() && today.getMonth() == dateFocus.getMonth() && today.getDayOfMonth() == currentDate) {
                         rectangle.setStroke(Color.BLUE);
                     }
                 }
+                stackPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        stackPane.setVisible(false);
+                    }
+                });
                 calendar.getChildren().add(stackPane);
             }
         }
@@ -390,7 +399,7 @@ public class TaskController implements Initializable {
     private void createCalendarActivity(List<CalendarActivity> calendarActivities, double rectangleHeight, double rectangleWidth, StackPane stackPane) {
         VBox calendarActivityBox = new VBox();
         for (int k = 0; k < calendarActivities.size(); k++) {
-            if(k >= 2) {
+            if (k >= 2) {
                 Text moreActivities = new Text("...");
                 calendarActivityBox.getChildren().add(moreActivities);
                 moreActivities.setOnMouseClicked(mouseEvent -> {
@@ -416,9 +425,9 @@ public class TaskController implements Initializable {
     private Map<Integer, List<CalendarActivity>> createCalendarMap(List<CalendarActivity> calendarActivities) {
         Map<Integer, List<CalendarActivity>> calendarActivityMap = new HashMap<>();
 
-        for (CalendarActivity activity: calendarActivities) {
+        for (CalendarActivity activity : calendarActivities) {
             int activityDate = activity.getDate().getDayOfMonth();
-            if(!calendarActivityMap.containsKey(activityDate)){
+            if (!calendarActivityMap.containsKey(activityDate)) {
                 calendarActivityMap.put(activityDate, List.of(activity));
             } else {
                 List<CalendarActivity> OldListByDate = calendarActivityMap.get(activityDate);
@@ -428,7 +437,7 @@ public class TaskController implements Initializable {
                 calendarActivityMap.put(activityDate, newList);
             }
         }
-        return  calendarActivityMap;
+        return calendarActivityMap;
     }
 
     private Map<Integer, List<CalendarActivity>> getCalendarActivitiesMonth(ZonedDateTime dateFocus) {
@@ -438,10 +447,72 @@ public class TaskController implements Initializable {
 
         Random random = new Random();
         for (int i = 0; i < 50; i++) {
-            ZonedDateTime time = ZonedDateTime.of(year, month, random.nextInt(27)+1, 16,0,0,0,dateFocus.getZone());
+            ZonedDateTime time = ZonedDateTime.of(year, month, random.nextInt(27) + 1, 16, 0, 0, 0, dateFocus.getZone());
             calendarActivities.add(new CalendarActivity(time, "Hans", 111111));
         }
 
         return createCalendarMap(calendarActivities);
     }
+
+    //Reminder
+    @FXML
+    private Label notifLabel;
+
+    private void showReminder(String taskName, LocalDate taskDeadline) throws IOException {
+        Platform.runLater(() -> {
+            // Check if task is due today or was due yesterday
+            LocalDate today = LocalDate.now();
+            if (taskDeadline.isEqual(today)) {
+                // Create reminder/notification UI
+                FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
+                try {
+                    Parent root = loader.load();
+                    //Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+                    notifLabel.setText("You have a task due today: " + taskName);
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (taskDeadline.isBefore(today)) {
+                // Create reminder/notification UI
+                FXMLLoader loader = new FXMLLoader(ReminderController.class.getResource("notification.fxml"));
+                try {
+                    Parent root = loader.load();
+                    //Label messageLabel = (Label) loader.getNamespace().get("messageLabel");
+                    //if (messageLabel != null) {
+                    notifLabel.setText("You missed a deadline yesterday: " + taskName);
+                    //}
+                    Scene scene = new Scene(root);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    class RemindersTask extends TimerTask {
+        @Override
+        public void run() {
+            // Retrieve task data from database
+            String[] taskData = DBUtils.getTaskForm(); // replace with actual user ID
+            if (taskData != null) {
+                String taskName = taskData[0];
+                String taskDescription = taskData[1];
+                LocalDate taskDeadline = LocalDate.parse(taskData[2]);
+                // Show reminder if necessary
+                try {
+                    showReminder(taskName, taskDeadline);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
+
