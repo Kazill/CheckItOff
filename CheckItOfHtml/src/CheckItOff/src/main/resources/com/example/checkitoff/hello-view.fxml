@@ -74,6 +74,7 @@
                   <TextField fx:id="textFieldName" layoutX="13.0" layoutY="117.0" prefHeight="25.0" prefWidth="301.0" />
                   <DatePicker fx:id="Date" layoutX="8.0" layoutY="730.0" prefHeight="46.0" prefWidth="188.0" AnchorPane.bottomAnchor="22.800000000000047" AnchorPane.rightAnchor="131.2" />
                   <ChoiceBox fx:id="CategoryPicker" layoutX="12.0" layoutY="381.0" prefHeight="26.0" prefWidth="302.0" />
+                  <Button fx:id="XTaskButton" layoutX="283.0" layoutY="32.0" mnemonicParsing="false" onAction="#closeAnchorPane" text="X" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="taskList" layoutX="14.0" layoutY="147.0" prefHeight="647.0" prefWidth="668.0">
