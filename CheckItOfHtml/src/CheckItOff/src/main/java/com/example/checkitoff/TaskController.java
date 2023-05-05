@@ -33,6 +33,8 @@ public class TaskController implements Initializable {
     @FXML
     private Button AddNewTask;
     @FXML
+    private Button XTaskButton;
+    @FXML
     private Button CategoryButton;
     @FXML
     private AnchorPane CategoryList;
@@ -104,6 +106,11 @@ public class TaskController implements Initializable {
             AddBar.setVisible(true);
             AddBar.toFront();
         }
+    }
+    
+    @FXML
+    private void closeAnchorPane(ActionEvent event) {
+        AddBar.setVisible(false);
     }
 
     @FXML
