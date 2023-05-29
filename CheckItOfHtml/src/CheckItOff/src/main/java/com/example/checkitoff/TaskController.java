@@ -18,13 +18,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import net.synedra.validatorfx.Check;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class TaskController implements Initializable {
 
@@ -75,6 +79,20 @@ public class TaskController implements Initializable {
     private Button X;
     @FXML
     private ChoiceBox CategoryPicker;
+    @FXML
+    private Label TaskCount;
+    @FXML
+    private Button SearchButton;
+    @FXML
+    private TextField SearchText;
+    @FXML
+    private CheckBox Daily;
+    @FXML
+    private Label Title;
+    @FXML
+    private Label DescriptionLabel;
+    @FXML
+    private Label EndDate;
 
     //Calendar
     ZonedDateTime dateFocus;
@@ -97,6 +115,7 @@ public class TaskController implements Initializable {
     private int dateCount = 2;
 
     private int CategoryNameCount = 0;
+    private int taskCount = 0;
 
 
     @FXML
@@ -107,7 +126,31 @@ public class TaskController implements Initializable {
             AddBar.toFront();
         }
     }
-    
+
+    @FXML
+    public void handleSearchButton(ActionEvent event) {
+        String searchText = SearchText.getText().trim(); // Get text and remove leading/trailing whitespaces
+        List<Task> tasks = DBUtils.getTaskForm(); // Get all tasks
+
+        if (!searchText.isEmpty()) {
+            // Filter tasks based on search text (ignoring case)
+            tasks = tasks.stream()
+                    .filter(task -> task.getName().toLowerCase().contains(searchText.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Clear and load the taskList with the filtered tasks
+        taskList.getChildren().clear();
+        checkBoxCount = 0;
+        descriptionCount = 1;
+        dateCount = 2;
+        taskCount = 0;
+        addTasksToTaskList(tasks);
+        Today.setText("Found");
+    }
+
+
+
     @FXML
     private void closeAnchorPane(ActionEvent event) {
         AddBar.setVisible(false);
@@ -121,24 +164,25 @@ public class TaskController implements Initializable {
         }
 
         //Data transfer to the database
-        DBUtils.sendTaskForm(textFieldName.getText(), textAreaDescription.getText(), Date.getValue() + "");
+        DBUtils.sendTaskForm(textFieldName.getText(), textAreaDescription.getText(), Date.getValue() + "", Daily.isSelected());
         //Adding task with given data
 
-        addNewTask(textFieldName.getText(), textAreaDescription.getText(), Date.getValue() + "");
+        addNewTask(textFieldName.getText(), textAreaDescription.getText(), Date.getValue() + "", false);
         //Form cleanup
         textFieldName.clear();
         textAreaDescription.clear();
+        Daily.setSelected(false);
     }
 
     public void Notification(String error) {
         //Pop up with text for error
     }
 
-    public void addNewTask(String name, String description, String date) {
+    public void addNewTask(String name, String description, String date, boolean isChecked) {
         CheckBox newCheckBox = new CheckBox(name);
         Label newDescription = new Label(description);
         Label newDate = new Label(date);
-        newCheckBox.setSelected(false);
+        newCheckBox.setSelected(isChecked);
         taskList.getChildren().add(newCheckBox);
         taskList.getChildren().add(newDescription);
         taskList.getChildren().add(newDate);
@@ -153,82 +197,91 @@ public class TaskController implements Initializable {
         checkBoxCount = checkBoxCount + 3;
         descriptionCount = descriptionCount + 3;
         dateCount = dateCount + 3;
+        taskCount++;
+        TaskCount.setText("" + taskCount);
     }
 
     //helping method loads all checkBox elements with a label text next to it and a status
     // to a taskList AnchorPane.
     public void loadTasks(int menu) {
-        String[] name = new String[0];
-        String[] description = new String[0];
-        boolean[] status = new boolean[0];
-        String[] date = new String[0];
-        if (menu == 0) {
-            //Change to Upcoming
-            ShowCalendar.setVisible(false);
-            String[] Name = {"Prepare for exam", "Grocery shopping"};
-            name = Name;
-            String[] Description = {"Prepare for tommorows examination on math", "Buy milk, cheese, bread"};
-            description = Description;
-            boolean[] Status = {true, false};
-            status = Status;
-            String[] Date = {"2023-05-15", "2023-04-30"};
-            date = Date;
-            if (AddNewTask.isVisible() == false) {
-                AddNewTask.setVisible(true);
-            }
-            Today.setText("Upcoming");
-        } else if (menu == 1) {
-            //Change to Today
-            ShowCalendar.setVisible(false);
-            String[] Name = {"Do laundry", "Do dishes"};
-            name = Name;
-            String[] Description = {"And don't forget to fold the laundry", "do dishes"};
-            description = Description;
-            boolean[] Status = {true, false};
-            status = Status;
-            String[] Date = {"2023-05-15", "2023-04-30"};
-            date = Date;
-            Today.setText("Today");
-            if (AddNewTask.isVisible() == false) {
-                AddNewTask.setVisible(true);
-            }
-        } else if (menu == 2) {
-            //Change to Calendar
-            Today.setText("Calendar");
-            AddNewTask.setVisible(false);
-            ShowCalendar.setVisible(true);
-
-        } else {
-            //ERROR
-            Notification("Error");
-        }
         taskList.getChildren().clear();
         checkBoxCount = 0;
         descriptionCount = 1;
         dateCount = 2;
-        for (int i = 0; i < name.length; i++) {
-            CheckBox newCheckBox = new CheckBox(name[i]);
-            Label newDescription = new Label(description[i]);
-            Label newDate = new Label(date[i]);
-            newCheckBox.setSelected(status[i]);
-            taskList.getChildren().add(newCheckBox);
-            taskList.getChildren().add(newDescription);
-            taskList.getChildren().add(newDate);
-            Node node = taskList.getChildren().get(checkBoxCount);
-            node.setLayoutY(10 * checkBoxCount);
-            node = taskList.getChildren().get(descriptionCount);
-            node.setLayoutY(10 * checkBoxCount);
-            node.setLayoutX(50 + 200);
-            node = taskList.getChildren().get(dateCount);
-            node.setLayoutY(10 * checkBoxCount);
-            node.setLayoutX(50 + 500);
-            checkBoxCount = checkBoxCount + 3;
-            descriptionCount = descriptionCount + 3;
-            dateCount = dateCount + 3;
+
+        if (menu == 0) {
+            // Change to Upcoming
+            ShowCalendar.setVisible(false);
+            List<Task> tasks = DBUtils.getTaskForm();
+            // Filter tasks to get only upcoming tasks
+            tasks = tasks.stream()
+                    .filter(task -> LocalDate.parse(task.getDate()).isAfter(LocalDate.now()))
+                    .collect(Collectors.toList());
+            Today.setText("Upcoming");
+            if (!AddNewTask.isVisible()) {
+                AddNewTask.setVisible(true);
+            }
+            Title.setVisible(true);
+            DescriptionLabel.setVisible(true);
+            EndDate.setVisible(true);
+            addTasksToTaskList(tasks);
+        } else if (menu == 1) {
+            // Change to Today
+            ShowCalendar.setVisible(false);
+            List<Task> tasks = DBUtils.getTaskForm();
+            // Filter tasks to get only today's tasks
+            tasks = tasks.stream()
+                    .filter(task -> LocalDate.parse(task.getDate()).isEqual(LocalDate.now()))
+                    .collect(Collectors.toList());
+            Today.setText("Today");
+            if (!AddNewTask.isVisible()) {
+                AddNewTask.setVisible(true);
+            }
+            Title.setVisible(true);
+            DescriptionLabel.setVisible(true);
+            EndDate.setVisible(true);
+            addTasksToTaskList(tasks);
+        }
+        else if (menu == 2) {
+            // Change to Calendar
+            Today.setText("Calendar");
+            AddNewTask.setVisible(false);
+            ShowCalendar.setVisible(true);
+            Title.setVisible(false);
+            DescriptionLabel.setVisible(false);
+            EndDate.setVisible(false);
+            TaskCount.setText("");
+        } else {
+            // ERROR
+            Notification("Error");
         }
     }
 
+    private void addTasksToTaskList(List<Task> tasks) {
+        for (Task task : tasks) {
+            String name = task.getName();
+            String description = task.getDescription();
+            String date = task.getDate();
+            boolean isChecked = DBUtils.isTaskChecked(name);
+            CheckBox newCheckBox = new CheckBox(name);
+
+            newCheckBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    String taskName = newCheckBox.getText();
+                    boolean isChecked = newCheckBox.isSelected();
+                    DBUtils.updateTask(taskName, isChecked);
+                }
+            });
+
+            addNewTask(name, description, date, isChecked);
+        }
+    }
+
+
     public void menuSetup(String[] text) {
+        taskCount = 0;
+        TaskCount.setText("" + taskCount);
         ObservableList<String> Text = FXCollections.observableArrayList();
         for (int i = 0; i < text.length; i++) {
             Text.add(text[i]);
@@ -259,6 +312,8 @@ public class TaskController implements Initializable {
     }
 
     public void onMenuSelection() {
+        taskCount = 0;
+        TaskCount.setText("" + taskCount);
         int n = MenuList.getSelectionModel().getSelectedIndex();
         loadTasks(n);
     }
@@ -298,6 +353,7 @@ public class TaskController implements Initializable {
             // Start timer to check for reminders every hour
             //Timer timer = new Timer();
             //timer.schedule(new RemindersTask(), 0, TimeUnit.HOURS.toMillis(1));
+        DBUtils.createDailyTasks();
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
         if (year != null) {
@@ -395,7 +451,7 @@ public class TaskController implements Initializable {
                 stackPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
-                        stackPane.setVisible(false);
+                        /*stackPane.setVisible(false);*/
                     }
                 });
                 calendar.getChildren().add(stackPane);
@@ -453,11 +509,14 @@ public class TaskController implements Initializable {
         int month = dateFocus.getMonth().getValue();
 
         Random random = new Random();
-        for (int i = 0; i < 50; i++) {
-            ZonedDateTime time = ZonedDateTime.of(year, month, random.nextInt(27) + 1, 16, 0, 0, 0, dateFocus.getZone());
-            calendarActivities.add(new CalendarActivity(time, "Hans", 111111));
+        List<Task> tasks = DBUtils.getTaskForm();
+        for (Task task : tasks) {
+            String name = task.getName();
+            String date = task.getDate();
+            LocalDate localDate = LocalDate.parse(date);
+            ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
+            calendarActivities.add(new CalendarActivity(zonedDateTime, name));
         }
-
         return createCalendarMap(calendarActivities);
     }
 
@@ -507,19 +566,22 @@ public class TaskController implements Initializable {
         @Override
         public void run() {
             // Retrieve task data from database
-            String[] taskData = DBUtils.getTaskForm(); // replace with actual user ID
-            if (taskData != null) {
-                String taskName = taskData[0];
-                String taskDescription = taskData[1];
-                LocalDate taskDeadline = LocalDate.parse(taskData[2]);
-                // Show reminder if necessary
-                try {
-                    showReminder(taskName, taskDeadline);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            List<Task> tasks = DBUtils.getTaskForm(); // replace with actual user ID
+            if (tasks != null && !tasks.isEmpty()) {
+                for (Task task : tasks) {
+                    String taskName = task.getName();
+                    String taskDescription = task.getDescription();
+                    LocalDate taskDeadline = LocalDate.parse(task.getDate()); // assuming that the date in Task is in a format that can be parsed to LocalDate
+                    // Show reminder if necessary
+                    try {
+                        showReminder(taskName, taskDeadline);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
+
 }
 

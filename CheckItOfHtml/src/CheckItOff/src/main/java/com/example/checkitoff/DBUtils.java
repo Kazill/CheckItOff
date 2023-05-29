@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DBUtils {
@@ -194,7 +196,7 @@ public class DBUtils {
         }
     }
 
-    public static void sendTaskForm(String name, String description, String date) {
+    public static void sendTaskForm(String name, String description, String date, boolean daily) {
         if (userID != null && name != null && description != null && date != null && !name.equals("") && !description.equals("") && !date.equals("null")) {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
@@ -203,11 +205,12 @@ public class DBUtils {
                 // load and register JDBC driver for MySQL
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
-                preparedStatement = connection.prepareStatement("INSERT INTO `task` (`ID`, `Name`, `Description`, `Date`) VALUES (?, ?, ?, ?)");
+                preparedStatement = connection.prepareStatement("INSERT INTO `task` (`ID`, `Name`, `Description`, `Date`, `Daily`) VALUES (?, ?, ?, ?, ?)");
                 preparedStatement.setInt(1, Integer.parseInt(userID));
                 preparedStatement.setString(2, name);
                 preparedStatement.setString(3, description);
                 preparedStatement.setString(4, date);
+                preparedStatement.setBoolean(5, daily);
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -220,15 +223,72 @@ public class DBUtils {
             alert.show();
         }
     }
-
-    public static String[] getTaskForm() {
+    public static void createDailyTasks() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String Name = null;
-        String Description = null;
-        String Date = null;
-        String[] result = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
+            preparedStatement = connection.prepareStatement("SELECT * FROM task WHERE daily = 1");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String name = resultSet.getString("Name");
+                String description = resultSet.getString("Description");
+                // Check if a task with this name and description already exists for today
+                PreparedStatement preparedStatement2 = connection.prepareStatement(
+                        "SELECT COUNT(*) FROM task WHERE Name = ? AND Description = ? AND Date = CURDATE()");
+                preparedStatement2.setString(1, name);
+                preparedStatement2.setString(2, description);
+                ResultSet resultSet2 = preparedStatement2.executeQuery();
+
+                if (resultSet2.next() && resultSet2.getInt(1) == 0) {
+                    // No task for today exists, create a new one
+                    PreparedStatement preparedStatement3 = connection.prepareStatement(
+                            "INSERT INTO task (ID, Name, Description, Date, daily) VALUES (?, ?, ?, CURDATE(), 1)");
+                    preparedStatement3.setString(1, userID);
+                    preparedStatement3.setString(2, name);
+                    preparedStatement3.setString(3, description);
+                    preparedStatement3.executeUpdate();
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            // close ResultSet
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close PreparedStatement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close Connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static List<Task> getTaskForm() {
+        List<Task> tasks = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             // load and register JDBC driver for MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -236,18 +296,128 @@ public class DBUtils {
             preparedStatement = connection.prepareStatement("SELECT * FROM `task` WHERE ID = ?");
             preparedStatement.setString(1, userID);
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                Name = resultSet.getString("Name");
-                Description = resultSet.getString("Description");
-                Date = resultSet.getString("Date");
-                String[] rs = {Name, Description, Date};
-                result = rs;
+            while(resultSet.next()) {
+                String name = resultSet.getString("Name");
+                String description = resultSet.getString("Description");
+                String date = resultSet.getString("Date");
+                tasks.add(new Task(name, description, date));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            // close ResultSet
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close PreparedStatement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close Connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return result;
+        return tasks;
     }
+    public static void updateTask(String taskName, boolean isChecked) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            // load and register JDBC driver for MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
+            preparedStatement = connection.prepareStatement("UPDATE task SET isChecked = ? WHERE Name = ? AND ID = ?");
+            preparedStatement.setBoolean(1, isChecked);
+            preparedStatement.setString(2, taskName);
+            preparedStatement.setString(3, userID); // assuming userID is a string, use setInt if it's an integer
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // close PreparedStatement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close Connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    public static boolean isTaskChecked(String taskName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean isChecked = false;
+        try {
+            // load and register JDBC driver for MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/checkitoff", "root", "");
+            preparedStatement = connection.prepareStatement("SELECT isChecked FROM task WHERE Name = ? AND ID = ?");
+            preparedStatement.setString(1, taskName);
+            preparedStatement.setString(2, userID); // assuming userID is a string, use setInt if it's an integer
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                isChecked = resultSet.getBoolean("isChecked");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // close ResultSet
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close PreparedStatement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // close Connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return isChecked;
+    }
+
+
+
 }

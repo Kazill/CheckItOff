@@ -3,6 +3,7 @@ package com.example.checkitoff;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -77,16 +78,18 @@ public class ReminderController implements Initializable {
         @Override
         public void run() {
             // Retrieve task data from database
-            String[] taskData = DBUtils.getTaskForm(); // replace with actual user ID
-            if (taskData != null) {
-                String taskName = taskData[0];
-                String taskDescription = taskData[1];
-                LocalDate taskDeadline = LocalDate.parse(taskData[2]);
-                // Show reminder if necessary
-                try {
-                    showReminder(taskName, taskDeadline);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            List<Task> tasks = DBUtils.getTaskForm(); // replace with actual user ID
+            if (tasks != null && !tasks.isEmpty()) {
+                for (Task task : tasks) {
+                    String taskName = task.getName();
+                    String taskDescription = task.getDescription();
+                    LocalDate taskDeadline = LocalDate.parse(task.getDate()); // assuming that the date in Task is in a format that can be parsed to LocalDate
+                    // Show reminder if necessary
+                    try {
+                        showReminder(taskName, taskDeadline);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
